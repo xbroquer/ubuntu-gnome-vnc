@@ -9,11 +9,11 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends apt-utils && \
     apt-get upgrade -y && \
     apt-get update && \
-	apt dist-upgrade -y 
+    apt dist-upgrade -y
 
 RUN ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
     apt-get update -q && \
-	apt-get install -y --no-install-recommends tzdata
+    apt-get install -y --no-install-recommends tzdata
 
 RUN dpkg-reconfigure -f noninteractive tzdata
 
@@ -25,8 +25,8 @@ RUN apt-get install -y libfuse2 && \
     cd /tmp ; dpkg-deb -e fuse_* && \
     cd /tmp ; rm fuse_*.deb && \
     #cd /tmp ; echo -en "#!/bin/bash\nexit 0\n" > DEBIAN/postinst && \
-	cd /tmp ; echo "#!/bin/bash" | tee DEBIAN/postinst > /dev/null && \
-	cd /tmp ; echo "exit 0" | tee -a DEBIAN/postinst > /dev/null && \
+    cd /tmp ; echo "#!/bin/bash" | tee DEBIAN/postinst > /dev/null && \
+    cd /tmp ; echo "exit 0" | tee -a DEBIAN/postinst > /dev/null && \
     cd /tmp ; dpkg-deb -b . /fuse.deb && \
     cd /tmp ; dpkg -i /fuse.deb
 
@@ -48,28 +48,28 @@ RUN apt-get install -y x11vnc xvfb firefox
 
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated software-properties-common curl apache2-utils \
-	   apt-transport-https wget curl vim netcat net-tools openssh-server gpg-agent paraview git repo\ 
-	   xfonts-base xfonts-75dpi xfonts-100dpi \
+       apt-transport-https wget curl vim netcat net-tools openssh-server gpg-agent paraview git repo \ 
+       xfonts-base xfonts-75dpi xfonts-100dpi \
        xorg ubuntu-desktop ubuntu-gnome-desktop gnome-core gnome-panel gnome-session gnome-settings-daemon metacity nautilus gnome-terminal gnome-tweak-tool \
-	   xfce4 \
-	   tightvncserver 
+       xfce4 \
+       tightvncserver
 
 RUN apt update \
     && apt install -y --no-install-recommends \
     && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list > /dev/null \
-	&& wget https://dl.google.com/linux/linux_signing_key.pub \
-	&& apt-key add linux_signing_key.pub \
-	&& apt update \
-	&& apt install -y google-chrome-stable \
-	&& rm linux_signing_key.pub \
-	&& wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add - \
-	#&& add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" \
-	&& echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" | tee /etc/apt/sources.list.d/vscode.list > /dev/null \
-	&& apt update \
-	&& apt install code \
-	&& apt autoclean -y \
-	&& apt autoremove -y \
-	&& rm -rf /var/lib/apt/lists/* 
+    && wget https://dl.google.com/linux/linux_signing_key.pub \
+    && apt-key add linux_signing_key.pub \
+    && apt update \
+    && apt install -y google-chrome-stable \
+    && rm linux_signing_key.pub \
+    && wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add - \
+    #&& add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" \
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" | tee /etc/apt/sources.list.d/vscode.list > /dev/null \
+    && apt update \
+    && apt install code \
+    && apt autoclean -y \
+    && apt autoremove -y \
+    && rm -rf /var/lib/apt/lists/* 
 
 
 # Hostname configuration
@@ -85,21 +85,19 @@ RUN echo "ff02::1 ip6-allnodes" | tee -a /etc/hosts > /dev/null
 RUN echo "ff02::2 ip6-allrouters" | tee -a /etc/hosts > /dev/null
 RUN cat /etc/hosts
 
-COPY init.sh /usr/local/bin/.
-
-# Autostart firefox (might not be the best way to do it, but it does the trick)
+# Autostart firefox (might not be the best way to do it, but it does the trick
 #RUN bash -c "echo "firefox" >> /.bashrc'
 
 RUN useradd -ms /bin/bash asap
 RUN usermod -aG sudo asap
 RUN echo "asap ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/asap \
-    && chmod 0440 /etc/sudoers.d/asap 
+    && chmod 0440 /etc/sudoers.d/asap
 
 # RUN mkdir /root/.vnc
-RUN     mkdir -p /home/asap/.vnc
+RUN mkdir -p /home/asap/.vnc
 
 # Setup a password
-# RUN     x11vnc -storepasswd 1234 /root/.vnc/passwd
+# RUN x11vnc -storepasswd 1234 /root/.vnc/passwd
 RUN x11vnc -storepasswd 1234 /home/asap/.vnc/passwd
 
 # COPY xstartup /root/.vnc/xstartup
